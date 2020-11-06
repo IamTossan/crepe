@@ -5,6 +5,7 @@ interface TextProps {
   readonly color?: string;
   readonly margin?: string;
   readonly padding?: string;
+  readonly width?: string;
 
   // font-size
   readonly title?: boolean;
@@ -32,6 +33,7 @@ const Text = styled.Text<TextProps>`
   color: ${(props) => props.color ?? '#000'};
   margin: ${(props) => props.margin ?? 0};
   padding: ${(props) => props.padding ?? 0};
+  ${({ width }) => (width ? `width: ${width};` : '')}
 
   ${({ title, large, medium, small, tiny }) => {
     switch (true) {

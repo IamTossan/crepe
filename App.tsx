@@ -4,61 +4,34 @@ import { StatusBar } from 'expo-status-bar';
 
 import colors from './constants/colors';
 import recipe from './constants/recipe';
+import getImage from './utils/getImage';
 
 import Text from './components/Text';
+import Serves from './components/Serves';
+import Ingredients from './components/Ingredients';
 
 const App = () => {
-  const [quantity, setQuantity] = useState(2);
+  const [quantity, updateQuantity] = useState(recipe.baseServes);
+
+  const setQuantity = (newValue: number) => {
+    if (newValue < 1 || newValue > 8) {
+      return;
+    }
+    updateQuantity(newValue);
+  };
+
   return (
     <Container>
-      <RecipeImage source={require('./assets/crepe.jpg')}></RecipeImage>
-      <Content>
+      <RecipeImage source={getImage(recipe.image)}></RecipeImage>
+      <RecipeContent>
         <Recipe>
           <Text title bold>
-            Crepe
+            {recipe.name}
           </Text>
-          <Serves>
-            <Text large bold>
-              serves:
-            </Text>
-            <Button
-              onPress={() => {
-                setQuantity(quantity - 1);
-              }}
-            >
-              <Text large>-</Text>
-            </Button>
-            <Text large bold>
-              {quantity}
-            </Text>
-            <Button
-              onPress={() => {
-                setQuantity(quantity + 1);
-              }}
-            >
-              <Text large>+</Text>
-            </Button>
-          </Serves>
-          <Ingredients>
-            <Text large bold>
-              ingredients:
-            </Text>
-            {recipe.map((i, idx) => (
-              <Ingredient key={idx}>
-                <Text medium>{i.label}</Text>
-                <Quantity>
-                  <Text medium right>
-                    {i.ratio * quantity}
-                  </Text>
-                  <Text medium right>
-                    {i.unit && ` ${i.unit}`}
-                  </Text>
-                </Quantity>
-              </Ingredient>
-            ))}
-          </Ingredients>
+          <Serves quantity={quantity} setQuantity={setQuantity} />
+          <Ingredients quantity={quantity} ingredients={recipe.ingredients} />
         </Recipe>
-      </Content>
+      </RecipeContent>
       <StatusBar style="auto" />
     </Container>
   );
@@ -76,7 +49,7 @@ const RecipeImage = styled.Image`
   height: 40%;
 `;
 
-const Content = styled.View`
+const RecipeContent = styled.View`
   width: 100%;
   height: 65%;
   bottom: 5%;
@@ -88,33 +61,6 @@ const Content = styled.View`
 
 const Recipe = styled.View`
   flex: 1;
-`;
-
-const Serves = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: baseline;
-  margin: 12px;
-`;
-
-const Button = styled.TouchableOpacity`
-  height: 20px;
-  width: 20px;
-`;
-
-const Ingredients = styled.View`
-  margin: 12px;
-`;
-
-const Ingredient = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  margin-top: 12px;
-`;
-
-const Quantity = styled.View`
-  flex-direction: row;
-  justify-content: flex-end;
 `;
 
 export default App;
