@@ -5,6 +5,8 @@ import { StatusBar } from 'expo-status-bar';
 import colors from './constants/colors';
 import recipe from './constants/recipe';
 import getImage from './utils/getImage';
+import Either, { filter, fold } from './utils/fp/either';
+import { pipe } from './utils/fp/core';
 
 import Text from './components/Text';
 import Serves from './components/Serves';
@@ -13,12 +15,15 @@ import Ingredients from './components/Ingredients';
 const App = () => {
   const [quantity, updateQuantity] = useState(recipe.baseServes);
 
-  const setQuantity = (newValue: number) => {
-    if (newValue < 1 || newValue > 8) {
-      return;
-    }
-    updateQuantity(newValue);
-  };
+  const isAboveMin = (v: number) => v >= 1;
+  const isUnderMax = (v: number) => v <= 8;
+
+  const setQuantity = pipe(
+    Either.of,
+    filter(isAboveMin),
+    filter(isUnderMax),
+    fold(() => {}, updateQuantity),
+  );
 
   return (
     <Container>

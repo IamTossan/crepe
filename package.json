@@ -7,7 +7,9 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "lint": "eslint --ext .ts --ext tsx .",
-    "test": "jest"
+    "test": "jest",
+    "test-watch": "jest --watch",
+    "test-cov": "jest --coverage"
   },
   "dependencies": {
     "expo": "~39.0.2",
