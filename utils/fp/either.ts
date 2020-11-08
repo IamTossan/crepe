@@ -1,5 +1,5 @@
-export default class Either<A> {
-  value: A;
+export default class Either<E, A> {
+  value: E | A;
 
   get isLeft() {
     return false;
@@ -17,7 +17,7 @@ export default class Either<A> {
     return new Right(x);
   }
 
-  filter(predicate: (v: A) => boolean): Either<A> {
+  filter(predicate: (v: E | A) => boolean): Either<E, A> {
     return predicate(this.value) ? Either.of(this.value) : new Left(this.value);
   }
 
@@ -26,7 +26,7 @@ export default class Either<A> {
   }
 }
 
-export class Left<A> extends Either<A> {
+export class Left<E> extends Either<E, any> {
   get isLeft() {
     return true;
   }
@@ -54,7 +54,7 @@ export class Left<A> extends Either<A> {
   }
 }
 
-export class Right<A> extends Either<A> {
+export class Right<A> extends Either<any, A> {
   get isLeft() {
     return false;
   }
@@ -82,8 +82,11 @@ export class Right<A> extends Either<A> {
   }
 }
 
-export const filter = <A>(p: (v: A) => boolean) => (e: Either<A>): Either<A> =>
-  e.filter(p);
+export const filter = <E, A>(p: (v: E | A) => boolean) => (
+  e: Either<E, A>,
+): Either<E, A> => e.filter(p);
 
-export const fold = (onLeft: Function, onRight: Function) => (e: Either<any>) =>
-  e.fold(onLeft, onRight);
+export const fold = <E, A>(
+  onLeft: (l: E) => unknown,
+  onRight: (r: A) => unknown,
+) => (e: Either<E, A>) => e.fold(onLeft, onRight);
